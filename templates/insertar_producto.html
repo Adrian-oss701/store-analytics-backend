@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Ventas</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        .form-group { margin-bottom: 10px; }
+        label { display: inline-block; width: 150px; }
+        input { padding: 5px; width: 200px; }
+        button { margin-top: 20px; padding: 10px 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Registrar Nueva Venta</h2>
+    
+    <div class="form-group">
+        <label>Fecha Venta:</label>
+        <input type="datetime-local" id="fecha_venta">
+    </div>
+    <div class="form-group">
+        <label>Sucursal:</label>
+        <input type="text" id="sucursal" placeholder="Ej. Norte">
+    </div>
+    <div class="form-group">
+        <label>Cajero ID:</label>
+        <input type="number" id="cajero_id">
+    </div>
+    <div class="form-group">
+        <label>Producto:</label>
+        <input type="text" id="producto">
+    </div>
+    <div class="form-group">
+        <label>Categoría:</label>
+        <input type="text" id="categoria">
+    </div>
+    <div class="form-group">
+        <label>Precio Unitario:</label>
+        <input type="number" step="0.01" id="precio_unitario">
+    </div>
+    <div class="form-group">
+        <label>Cantidad:</label>
+        <input type="number" id="cantidad">
+    </div>
+    <div class="form-group">
+        <label>Método Pago:</label>
+        <input type="text" id="metodo_pago" placeholder="Efectivo/Tarjeta">
+    </div>
+    <div class="form-group">
+        <label>Descuento:</label>
+        <input type="number" step="0.01" id="descuento_aplicado">
+    </div>
+    <div class="form-group">
+        <label>Total Venta:</label>
+        <input type="number" step="0.01" id="total_venta">
+    </div>
+
+    <button onclick="enviarVenta()">Registrar Venta</button>
+    <p id="mensaje"></p>
+
+    <script>
+        function enviarVenta() {
+            const datosVenta = {
+                fecha_venta: document.getElementById('fecha_venta').value.replace('T', ' ') + ':00',
+                sucursal: document.getElementById('sucursal').value,
+                cajero_id: document.getElementById('cajero_id').value,
+                producto: document.getElementById('producto').value,
+                categoria: document.getElementById('categoria').value,
+                precio_unitario: document.getElementById('precio_unitario').value,
+                cantidad: document.getElementById('cantidad').value,
+                metodo_pago: document.getElementById('metodo_pago').value,
+                descuento_aplicado: document.getElementById('descuento_aplicado').value,
+                total_venta: document.getElementById('total_venta').value
+            };
+
+            fetch('/ventas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datosVenta)
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('mensaje').textContent = data.mensaje;
+                if(data.mensaje.includes("éxito")) alert("Venta Guardada");
+            })
+            .catch(err => console.error("Error:", err));
+        }
+    </script>
+</body>
+</html>
